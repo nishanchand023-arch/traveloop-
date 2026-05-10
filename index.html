@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traveloop | Personalized Travel Planning</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="auth-screen" class="auth-screen">
+    <section class="auth-visual" aria-label="Traveloop overview">
+      <div class="brand-mark">T</div>
+      <h1>Traveloop</h1>
+      <p>Plan multi-city journeys, track rupee budgets, build day-wise itineraries, and share trips with friends.</p>
+      <div class="auth-stats">
+        <span><strong>14</strong> planner tools</span>
+        <span><strong>INR</strong> cost tracking</span>
+        <span><strong>Live</strong> itinerary view</span>
+      </div>
+    </section>
+
+    <section class="auth-panel">
+      <div class="auth-tabs" role="tablist" aria-label="Authentication mode">
+        <button class="auth-tab active" id="signin-tab" type="button">Sign In</button>
+        <button class="auth-tab" id="signup-tab" type="button">Sign Up</button>
+      </div>
+
+      <form id="auth-form" class="auth-form">
+        <h2 id="auth-title">Welcome back</h2>
+        <p id="auth-copy">Access your personal travel workspace.</p>
+        <label>
+          Name
+          <input id="auth-name" type="text" autocomplete="name" placeholder="Your name">
+        </label>
+        <label>
+          Email
+          <input id="auth-email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        </label>
+        <label>
+          Password
+          <input id="auth-password" type="password" autocomplete="current-password" placeholder="Minimum 6 characters" required>
+        </label>
+        <button class="primary-button" type="submit">Continue</button>
+        <button class="link-button" id="forgot-password" type="button">Forgot password?</button>
+        <p class="form-message" id="auth-message" role="status"></p>
+      </form>
+    </section>
+  </main>
+
+  <div id="app-shell" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark small">T</div>
+        <div>
+          <strong>Traveloop</strong>
+          <span>Trip planner</span>
+        </div>
+      </div>
+      <nav class="nav-list" aria-label="Primary navigation">
+        <button class="nav-item active" data-view="dashboard">Dashboard</button>
+        <button class="nav-item" data-view="create">Create Trip</button>
+        <button class="nav-item" data-view="trips">My Trips</button>
+        <button class="nav-item" data-view="builder">Itinerary Builder</button>
+        <button class="nav-item" data-view="discover">City Search</button>
+        <button class="nav-item" data-view="activities">Activities</button>
+        <button class="nav-item" data-view="budget">Budget</button>
+        <button class="nav-item" data-view="packing">Packing</button>
+        <button class="nav-item" data-view="share">Share</button>
+        <button class="nav-item" data-view="notes">Notes</button>
+        <button class="nav-item" data-view="profile">Profile</button>
+        <button class="nav-item" data-view="analytics">Analytics</button>
+      </nav>
+      <button class="ghost-button" id="logout-button" type="button">Sign Out</button>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Personalized travel planning made easy</p>
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+          <select id="active-trip-select" aria-label="Active trip"></select>
+          <button class="primary-button compact" id="quick-new-trip" type="button">Plan New Trip</button>
+        </div>
+      </header>
+
+      <section class="view active" id="dashboard-view">
+        <div class="hero-panel">
+          <div>
+            <p class="eyebrow">Hello, <span id="user-name-display">traveler</span></p>
+            <h2>Build a route, watch costs, and keep every stop in motion.</h2>
+            <p>Your upcoming trips, destination ideas, and budget signals stay together in one calm workspace.</p>
+          </div>
+          <div class="route-card" aria-label="Route summary">
+            <span>Start</span>
+            <strong id="hero-route">Create your first trip</strong>
+            <small id="hero-budget">Estimated total: ₹0</small>
+          </div>
+        </div>
+        <div class="metric-grid">
+          <article><span>Trips</span><strong id="metric-trips">0</strong></article>
+          <article><span>Stops</span><strong id="metric-stops">0</strong></article>
+          <article><span>Activities</span><strong id="metric-activities">0</strong></article>
+          <article><span>Total Budget</span><strong id="metric-budget">₹0</strong></article>
+        </div>
+        <div class="two-column">
+          <section class="panel">
+            <div class="panel-heading">
+              <h2>Recent Trips</h2>
+              <button class="text-button" data-view-jump="trips" type="button">View all</button>
+            </div>
+            <div id="recent-trips" class="card-list"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-heading">
+              <h2>Recommended Destinations</h2>
+              <button class="text-button" data-view-jump="discover" type="button">Explore</button>
+            </div>
+            <div id="recommended-cities" class="destination-grid"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="create-view">
+        <section class="panel narrow">
+          <h2>Create a Trip</h2>
+          <form id="trip-form" class="grid-form">
+            <label>Trip name<input id="trip-name" required placeholder="Summer in the North"></label>
+            <label>Start date<input id="trip-start" type="date" required></label>
+            <label>End date<input id="trip-end" type="date" required></label>
+            <label>Cover photo URL<input id="trip-cover" placeholder="Optional image URL"></label>
+            <label class="full">Description<textarea id="trip-description" rows="4" placeholder="What kind of journey is this?"></textarea></label>
+            <label>Target budget (₹)<input id="trip-budget" type="number" min="0" step="500" value="50000"></label>
+            <button class="primary-button" type="submit">Save Trip</button>
+          </form>
+        </section>
+      </section>
+
+      <section class="view" id="trips-view">
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>My Trips</h2>
+            <button class="primary-button compact" data-view-jump="create" type="button">New Trip</button>
+          </div>
+          <div id="trip-list" class="trip-grid"></div>
+        </section>
+      </section>
+
+      <section class="view" id="builder-view">
+        <div class="two-column builder-layout">
+          <section class="panel">
+            <h2>Add Travel Stop</h2>
+            <form id="stop-form" class="grid-form">
+              <label>City<select id="stop-city"></select></label>
+              <label>Arrival<input id="stop-arrival" type="date" required></label>
+              <label>Departure<input id="stop-departure" type="date" required></label>
+              <label>Stay cost (₹)<input id="stop-stay" type="number" min="0" step="500" value="6000"></label>
+              <label>Transport cost (₹)<input id="stop-transport" type="number" min="0" step="500" value="3500"></label>
+              <button class="primary-button" type="submit">Add Stop</button>
+            </form>
+          </section>
+          <section class="panel">
+            <div class="panel-heading">
+              <h2>Itinerary</h2>
+              <div class="segmented">
+                <button class="segment active" data-mode="list" type="button">List</button>
+                <button class="segment" data-mode="calendar" type="button">Calendar</button>
+              </div>
+            </div>
+            <div id="itinerary-output" class="timeline"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="discover-view">
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>City Search</h2>
+            <div class="filter-row">
+              <input id="city-search" type="search" placeholder="Search city or country">
+              <select id="region-filter">
+                <option value="all">All regions</option>
+                <option value="India">India</option>
+                <option value="Asia">Asia</option>
+                <option value="Europe">Europe</option>
+                <option value="Middle East">Middle East</option>
+              </select>
+            </div>
+          </div>
+          <div id="city-results" class="destination-grid wide"></div>
+        </section>
+      </section>
+
+      <section class="view" id="activities-view">
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>Activity Search</h2>
+            <div class="filter-row">
+              <select id="activity-type">
+                <option value="all">All types</option>
+                <option value="Culture">Culture</option>
+                <option value="Food">Food</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Leisure">Leisure</option>
+              </select>
+              <select id="activity-cost">
+                <option value="all">All costs</option>
+                <option value="low">Under ₹1,500</option>
+                <option value="mid">₹1,500 - ₹4,000</option>
+                <option value="high">Above ₹4,000</option>
+              </select>
+            </div>
+          </div>
+          <div id="activity-results" class="activity-grid"></div>
+        </section>
+      </section>
+
+      <section class="view" id="budget-view">
+        <div class="two-column">
+          <section class="panel">
+            <h2>Trip Budget</h2>
+            <div class="budget-total" id="budget-total">₹0</div>
+            <div id="budget-alert" class="budget-alert"></div>
+            <div id="budget-bars" class="budget-bars"></div>
+          </section>
+          <section class="panel">
+            <h2>Cost Breakdown</h2>
+            <div class="donut-wrap">
+              <div id="budget-donut" class="donut"></div>
+              <div id="budget-legend" class="legend"></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="packing-view">
+        <div class="two-column">
+          <section class="panel">
+            <h2>Packing Checklist</h2>
+            <form id="packing-form" class="inline-form">
+              <input id="packing-item" placeholder="Passport, charger, jacket">
+              <select id="packing-category">
+                <option>Documents</option>
+                <option>Clothing</option>
+                <option>Electronics</option>
+                <option>Health</option>
+                <option>Other</option>
+              </select>
+              <button class="primary-button compact" type="submit">Add</button>
+            </form>
+            <div id="packing-list" class="check-list"></div>
+          </section>
+          <section class="panel">
+            <h2>Progress</h2>
+            <div class="progress-ring"><span id="packing-progress">0%</span></div>
+            <button class="ghost-button" id="reset-packing" type="button">Reset Checklist</button>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="share-view">
+        <section class="panel narrow">
+          <h2>Shared Itinerary</h2>
+          <p class="muted">Generate a read-only public preview and sharing link for the active trip.</p>
+          <div id="public-preview" class="public-preview"></div>
+          <div class="share-row">
+            <input id="share-url" readonly>
+            <button class="primary-button compact" id="copy-share" type="button">Copy Link</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="notes-view">
+        <div class="two-column">
+          <section class="panel">
+            <h2>Trip Notes</h2>
+            <form id="note-form" class="note-form">
+              <textarea id="note-text" rows="6" placeholder="Hotel check-in, local contacts, reminders..."></textarea>
+              <button class="primary-button" type="submit">Save Note</button>
+            </form>
+          </section>
+          <section class="panel">
+            <h2>Saved Notes</h2>
+            <div id="notes-list" class="notes-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="profile-view">
+        <section class="panel narrow">
+          <h2>Profile Settings</h2>
+          <form id="profile-form" class="grid-form">
+            <label>Name<input id="profile-name"></label>
+            <label>Email<input id="profile-email" type="email"></label>
+            <label>Photo URL<input id="profile-photo" placeholder="Optional"></label>
+            <label>Language
+              <select id="profile-language">
+                <option>English</option>
+                <option>Hindi</option>
+                <option>Spanish</option>
+                <option>French</option>
+              </select>
+            </label>
+            <label class="full">Saved destinations<textarea id="profile-saved" rows="3"></textarea></label>
+            <button class="primary-button" type="submit">Save Profile</button>
+          </form>
+        </section>
+      </section>
+
+      <section class="view" id="analytics-view">
+        <div class="metric-grid">
+          <article><span>Users</span><strong>1</strong></article>
+          <article><span>Trips Created</span><strong id="admin-trips">0</strong></article>
+          <article><span>Top City</span><strong id="admin-city">-</strong></article>
+          <article><span>Engagement</span><strong id="admin-engagement">0%</strong></article>
+        </div>
+        <section class="panel">
+          <h2>Platform Usage</h2>
+          <div id="analytics-table" class="analytics-table"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
